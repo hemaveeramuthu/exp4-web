@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Calculator</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #ffbb91, #ffb6b9); /* Gradient background */
+            color: #17202a; /* Text color */
+        }
+        .item-card {
+            margin-bottom: 20px;
+            background-color: rgba(255, 218, 185, 0.9); /* Light orange background */
+            border-radius: 10px;
+        }
+        .card-header {
+            background: rgba(255, 218, 185, 0.9); /* Light orange background */
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
+        .card-body {
+            background-color: rgba(255, 218, 185, 0.7); /* Semi-transparent light orange background */
+            border-radius: 0 0 10px 10px;
+        }
+        /* Prevent text truncation in buttons */
+        .btn-text-wrap {
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: initial;
+            word-wrap: break-word;
+        }
+        /* Adjust button size */
+        .btn-custom {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        /* Button colors */
+        .btn-secondary {
+            background-color: #ff7675; /* Light red */
+            border-color: #ff7675;
+        }
+        .btn-secondary:hover {
+            background-color: #ff6b6b; /* Darker red on hover */
+            border-color: #ff6b6b;
+        }
+        .btn-primary {
+            background-color: #74b9ff; /* Light blue */
+            border-color: #74b9ff;
+        }
+        .btn-primary:hover {
+            background-color: #4a90e2; /* Darker blue on hover */
+            border-color: #4a90e2;
+        }
+        .btn-danger {
+            background-color: #ff7675; /* Light red */
+            border-color: #ff7675;
+        }
+        .btn-danger:hover {
+            background-color: #ff6b6b; /* Darker red on hover */
+            border-color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Bill Calculator</h2>
+            </div>
+            <div class="card-body">
+                <form id="billForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemName">Item Name</label>
+                                <input type="text" class="form-control itemName" placeholder="Enter item name">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                <input type="number" class="form-control price" placeholder="Enter price">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" class="form-control quantity" placeholder="Enter quantity">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-secondary btn-block mt-md-4 btn-text-wrap btn-custom" onclick="addItem()">Add Item</button>
+                        </div>
+                    </div>
+                    <div id="items" class="item-card"></div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-text-wrap btn-custom">Calculate</button>
+                    </div>
+                </form>
+                <div id="billDetails" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function addItem() {
+            var item = '<div class="card item-card"><div class="card-body"><div class="row"><div class="col-md-4"><label for="itemName">Item Name</label><input type="text" class="form-control itemName" placeholder="Enter item name"></div><div class="col-md-4"><label for="price">Price</label><input type="number" class="form-control price" placeholder="Enter price"></div><div class="col-md-3"><label for="quantity">Quantity</label><input type="number" class="form-control quantity" placeholder="Enter quantity"></div><div class="col-md-1"><button type="button" class="btn btn-danger btn-block mt-md-4 btn-text-wrap btn-custom" onclick="removeItem(this)">Remove</button></div></div></div></div>';
+            $('#items').append(item);
+        }
+
+        function removeItem(item) {
+            $(item).closest('.item-card').remove();
+        }
+
+        document.getElementById('billForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var itemNames = Array.from(document.getElementsByClassName('itemName')).map(input => input.value);
+            var prices = Array.from(document.getElementsByClassName('price')).map(input => parseFloat(input.value));
+            var quantities = Array.from(document.getElementsByClassName('quantity')).map(input => parseInt(input.value));
+            var total = prices.reduce((sum, price, index) => sum + price * quantities[index], 0);
+            var billDetailsHTML = '<div class="card"><div class="card-body"><h3>Bill Details:</h3><ul>';
+            for (var i = 0; i < itemNames.length; i++) {
+                billDetailsHTML += '<li>' + itemNames[i] + ' - Price: ' + prices[i] + ', Quantity: ' + quantities[i] + '</li>';
+            }
+            billDetailsHTML += '</ul><h4>Total Bill: ' + total.toFixed(2) + '</h4></div></div>';
+            document.getElementById('billDetails').innerHTML = billDetailsHTML;
+        });
+    </script>
+</body>
+</html>
